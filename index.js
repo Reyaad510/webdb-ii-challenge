@@ -19,6 +19,8 @@ const db = knex(knexConfig);
 
 // endpoints here
 
+// GET
+
 server.get('/api/zoos', (req, res) => {
   db('zoos')
   .then(zoos => {
@@ -26,6 +28,33 @@ server.get('/api/zoos', (req, res) => {
   }).catch(err => {
     console.log(err);
   })
+})
+
+
+// Post
+
+server.post('/api/zoos', (req, res) => {
+  if(!req.body.name) {
+    res.status(400).json({ message: 'Please put a name' });
+  } else {
+    db('zoos')
+    .insert(req.body, 'id')
+    .then(ids => {
+      db('zoos')
+      .where({ id: ids[0] })
+      .first()
+      .then(zoo => {
+        res.status(200).json(zoo);
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      })
+      .catch(err => {
+        res.status(500).json(err)
+      })
+    })
+
+  }
 })
 
 
