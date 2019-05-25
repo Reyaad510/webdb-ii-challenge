@@ -79,7 +79,7 @@ server.post('/api/zoos', (req, res) => {
 
 // Update
 
-server.use('/api/zoos/:id', (req, res) => {
+server.put('/api/zoos/:id', (req, res) => {
   db('zoos')
   .where({ id: req.params.id })
   .update(req.body)
@@ -92,6 +92,25 @@ server.use('/api/zoos/:id', (req, res) => {
   })
   .catch(err => {
     res.status(500).json(err);
+  })
+})
+
+
+// Delete
+
+server.delete('/api/zoos/:id', (req, res) => {
+  db('zoos')
+  .where({ id: req.params.id })
+  .del()
+  .then(count => {
+    if(count > 0) {
+      res.status(200).json({ message: `${count} ${count > 1 ? 'records' : 'record'} deleted.` })
+    } else {
+      res.status(404).json({ message: 'Zoo does not exist' })
+    }
+  })
+  .catch(err => {
+    res.status(500).json(err)
   })
 })
 
